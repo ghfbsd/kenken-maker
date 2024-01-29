@@ -39,11 +39,15 @@ Promise.all([readPuzzle, readSolutions])
 		for (const cage of cages) {
 			const {op, val, boxes} = cage
 			let topLeftBox: [number, number] = [Infinity, Infinity]
+			let n = 0
 			for (const [r, c] of boxes) {
+				n += 1
 				boxCage.set([r, c].join(' '), cage)
 				const [topLeftR, topLeftC] = topLeftBox
 				if (r < topLeftR || (r === topLeftR && c < topLeftC)) topLeftBox = [r, c]
 			}
+			if ((op == '/' || op == '-') && n > 2)
+			   throw new Error('/ or - with ' + n + ' boxes')
 			let displayOp = DISPLAY_OPS.get(op)
 			if (displayOp === undefined) displayOp = op
 			boxOps.set(topLeftBox.join(' '), val + displayOp)

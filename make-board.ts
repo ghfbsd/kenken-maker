@@ -63,8 +63,13 @@ function addCage(board: Board, cages: Cage[], boxes: Box[]) {
 		const maxMinus = (max << 1) - sum,
 		        maxDiv = max ** 2 / product
 		op =
-			(maxDiv === (maxDiv | 0) && Math.random() < DIV_PROB) ? '/' : //try to use div if possible, since this is rarer
-			(maxMinus > 0 && Math.random() < MINUS_PROB) ? '-' :
+			// try to use div if possible, since this is rarer
+			// also only allow it for 2 box group
+			(maxDiv === (maxDiv | 0) && Math.random() < DIV_PROB &&
+			 boxes.length === 2) ? '/' :
+			// minus also only allowed for 2 box group
+			(maxMinus > 0 && Math.random() < MINUS_PROB &&
+			 boxes.length === 2) ? '-' :
 			chooseRand(alwaysPossibleOps)
 		switch (op) {
 			case '+':
