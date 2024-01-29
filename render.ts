@@ -7,8 +7,8 @@ const PUZZLE_FILE = 'puzzle.html'
 //Symbols to display instead of op strings
 const DISPLAY_OPS = new Map<Op, string>()
 	.set('=', '')
-	.set('*', '×')
-	.set('/', '÷')
+	.set('*', '&times;')
+	.set('/', '&divide;')
 
 const {argv} = process
 if (argv.length !== 3) throw new Error('Usage: ./render.js path/to/cagings.sbv')
