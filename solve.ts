@@ -11,7 +11,7 @@ function allPossibilities(max: number) {
 	return possibilities
 }
 
-type Solver = (board: SolvingBoard) => void
+type Solver = (board: SolvingBoard, verbose: boolean) => void
 
 function arithmeticPossibilities(op: Op, val: number, max: number, boxes: number): number[][] {
 	if (!boxes) throw new Error('No boxes')
@@ -90,8 +90,9 @@ function cachedPosibilities(op: Op, val: number, max: number, boxes: number): nu
 	return possibilities
 }
 
-const arithmeticSolver: Solver = board => {
+const arithmeticSolver: Solver = (board, verbose) => {
 	const {max, cages, rows} = board
+	if (verbose) console.log('AS')
 	for (const cage of cages) {
 		const {op, val, boxes} = cage
 		if ((op === '+' || op === '-') && boxes.length > MAX_ADDITION_SIZE) continue
@@ -144,7 +145,8 @@ const arithmeticSolver: Solver = board => {
 		}
 	}
 }
-const pickUniques: Solver = board => {
+const pickUniques: Solver = (board, verbose) => {
+	if (verbose) console.log('PU')
 	for (const row of board.rows) {
 		const possibleBoxes = new Map<number, SolvingBox[]>()
 		for (const box of row.boxes) {
@@ -164,8 +166,9 @@ const pickUniques: Solver = board => {
 		}
 	}
 }
-const findIsolatedGroups: Solver = board => {
+const findIsolatedGroups: Solver = (board, verbose) => {
 	const toExclude = new Map<SolvingBox, Set<number>>()
+	if (verbose) console.log('IG')
 	for (const {boxes} of board.rows) {
 		for (let groupSize = 1; groupSize <= MAX_GROUP_SIZE && groupSize < boxes.length; groupSize++) {
 			for (const group of choose(boxes, groupSize)) {
@@ -200,7 +203,8 @@ interface RowAndCrossRows {
 	row: SolvingRow
 	crossRows: SolvingRow[]
 }
-const crossRowEliminate: Solver = board => {
+const crossRowEliminate: Solver = (board, verbose) => {
+	if (verbose) console.log('CRE')
 	for (let value = MIN_NUMBER; value <= board.max; value++) {
 		const boxesToExclude = new Set<SolvingBox>()
 		for (const direction of board.directionRows) {
@@ -310,13 +314,13 @@ class SolvingBoard {
 	get directionRows(): SolvingRow[][] {
 		return [this._rows, this._columns]
 	}
-	solve(): number {
+	solve(verbose=false): number {
 		let rounds = 0
 		while (true) {
 			const newBoard = this.clone
 			for (const solver of solvers) { //solve independent with each solver, starting from current board
 				const solverBoard = this.clone
-				solver(solverBoard)
+				solver(solverBoard,verbose)
 				for (const [box, solvedBox] of zip(newBoard.boxes(), solverBoard.boxes())) {
 					box.restrictPossibilities(solvedBox.possibilities) //further restrict newBoard's possibilities from each solver's choices
 				}
