@@ -142,14 +142,18 @@ const arithmeticSolver: Solver = (board, verbose) => {
 		for (const [row, mustHaves] of rowsMustHave) {
 			for (const box of row.boxes) {
 				if (originalBoxPossibilities.has(box)) continue //skip boxes in this cage
-				for (const mustHave of mustHaves) box.excludePossibility(mustHave)
-				num++
+				for (const mustHave of mustHaves) {
+					if (!box.hasPossibility(mustHave)) continue
+					box.excludePossibility(mustHave)
+					num++
+				}
 			}
 		}
 	}
 	if (verbose && !prev.equals(board))
 		console.log('AS: ' + num + ' changes')
 }
+
 const pickUniques: Solver = (board, verbose) => {
 	let num = 0, prev = board.clone, solved = ''
 	for (const row of board.rows) {
@@ -183,6 +187,7 @@ const pickUniques: Solver = (board, verbose) => {
 		)
 	}
 }
+
 const findIsolatedGroups: Solver = (board, verbose) => {
 	const toExclude = new Map<SolvingBox, Set<number>>()
 	for (const {boxes} of board.rows) {
