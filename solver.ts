@@ -36,7 +36,7 @@ Promise.all([readPuzzle, readSolutions])
 			console.log('Failed solve\n' + solvingBoard.toString())
 		}
 		else
-			console.log('Successful solve in ' + steps + ' steps')
+			console.log('Successful solve, ' + steps + ' steps')
 		if (sol)
 			console.log('Solution available')
 	})
