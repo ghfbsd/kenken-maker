@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import * as sb from 'structure-bytes'
 import {makeSolvingBoard} from './solve'
-import {Puzzle, puzzleType, solutionType} from './types'
+import {Puzzle, puzzleType} from './types'
 
 const {argv} = process
 if (argv.length <= 2) throw new Error('Usage: ./solver.js path/to/cagings.sbv')
@@ -16,28 +16,19 @@ const readPuzzle = new Promise<Puzzle>((resolve, reject) => {
 		else resolve(value!)
 	})
 })
-const readSolutions = new Promise<number[]>((resolve, reject) => {
-	sb.readValue({
-		type: solutionType,
-		inStream: fs.createReadStream('solution.sbv')
-	}, (err, solution) => {
-		if (err) reject(err)
-		else resolve(solution!)
-	})
-})
-Promise.all([readPuzzle, readSolutions])
-	.then(([puzzle, solution]) => {
+Promise.all([readPuzzle])
+	.then(([puzzle]) => {
 		const {max, cages} = puzzle!
-		const sol = solution!
 		const solvingBoard = makeSolvingBoard(max, cages)
 		const steps = solvingBoard.solve(true)
 		if (solvingBoard.noPossibilities() ||
 		    !solvingBoard.isSolved()) { //should never happen
 			console.log('Failed solve\n' + solvingBoard.toString())
 		}
-		else
-			console.log('Successful solve, ' + steps + ' steps')
-		if (sol)
-			console.log('Solution available')
+		else {
+			console.log('Successful solve:\n' +
+				solvingBoard.toString())
+			console.log('Difficulty level: ' + (steps-1) + '.')
+		}
 	})
 	.catch(console.error)
