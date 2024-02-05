@@ -184,7 +184,6 @@ const pickUniques: Solver = (board, verbose) => {
 	}
 }
 const findIsolatedGroups: Solver = (board, verbose) => {
-	let num = 0
 	const toExclude = new Map<SolvingBox, Set<number>>()
 	for (const {boxes} of board.rows) {
 		for (let groupSize = 1; groupSize <= MAX_GROUP_SIZE && groupSize < boxes.length; groupSize++) {
@@ -212,12 +211,23 @@ const findIsolatedGroups: Solver = (board, verbose) => {
 	 * Otherwise, one isolated group could exclude possibilities, forming a new isolated group
 	 * that could exclude other possibilities in the same step.
 	 */
+	let num = 0, prev = board.clone, solved = ''
 	for (const [box, possibilities] of toExclude) {
 		for (const possibility of possibilities) {
+			if (!box.hasPossibility(possibility)) continue
 			box.excludePossibility(possibility)
+			num++
+			solved += ' ' +
+				[...box.rows]
+				.map(({RC,num}) => RC + String(1+num))
+				.join('') + '(' + possibility + ')'
 		}
 	}
-	if (verbose && num > 0) console.log('IG: ' + num + ' reductions')
+	if (verbose && num > 0) {
+		console.log('IG (initial)\n' + prev.toString())
+		console.log('... ' + num + ' eliminations:' + solved)
+		console.log(board.toString())
+	}
 }
 
 interface RowAndCrossRows {
