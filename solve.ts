@@ -151,7 +151,7 @@ const arithmeticSolver: Solver = (board, verbose) => {
 		console.log('AS: ' + num + ' changes')
 }
 const pickUniques: Solver = (board, verbose) => {
-	let num = 0
+	let num = 0, prev = board.clone, solved = ''
 	for (const row of board.rows) {
 		const possibleBoxes = new Map<number, SolvingBox[]>()
 		for (const box of row.boxes) {
@@ -166,12 +166,22 @@ const pickUniques: Solver = (board, verbose) => {
 		}
 		for (const [possibility, boxes] of possibleBoxes) {
 			if (boxes.length !== 1) continue
+			if (boxes[0].value === possibility) continue
 			const [box] = boxes
 			box.value = possibility
+			solved += ' ' +
+				rowID(row) + rowID(box.getOtherRow(row)) +
+				'(' + String(possibility) + ')'
 			num++
 		}
 	}
-	if (verbose && num > 0) console.log('PU: ' + num + ' solved')
+	if (verbose && num > 0) {
+		console.log('PU (initial)\n' + prev.toString())
+		console.log(
+			'... ' + num + ' boxes solved:' + solved + '\n' +
+			board.toString()
+		)
+	}
 }
 const findIsolatedGroups: Solver = (board, verbose) => {
 	let num = 0
