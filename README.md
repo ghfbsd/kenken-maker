@@ -133,10 +133,10 @@ The solving rules are as follows:
 	This is easier to understand when `k` is 2.
 	Consider two columns in a 4x4 grid:
 	````
-	2 or 3     3 or 4
-	1 or 2     1 or 4
-	1 or 3     1 or 3
-	  4          2
+	2 or 3     3 or 4     no 3 here     no 3 here
+	1 or 2     1 or 4     no 1 here     no 1 here
+	1 or 3     1 or 3     no 1 or 3     no 1 or 3
+	  4          2         anything      anything
 	````
 
 	You can see that in each column, 1 must be in either the second or third boxes and 3 must be in either the first or third boxes.
@@ -157,3 +157,4 @@ This is probably not the most accurate metric of what makes a puzzle difficult t
 Among other things, it doesn't consider the breadth of the inference graph or the relative difficulty of steps made by the different solvers.
 
 Caleb Sander (CS), 2018
+ghfbsd, 2024
