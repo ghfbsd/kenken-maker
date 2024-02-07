@@ -1,7 +1,7 @@
 # kenken-maker
 
 The aim of this project is to randomly generate [KenKen](http://kenkenpuzzle.com) puzzles, with a difficulty metric to help find interesting ones.
-I am currently using it to provide KenKen puzzles for Caltech's newspaper.
+CS is currently using it to provide KenKen puzzles for Caltech's newspaper.
 
 ## Running the code
 
@@ -13,6 +13,8 @@ npm run build
 
 `main.js` creates a random puzzle solution and then continually generates cagings which can be solved to give that solution.
 For larger grid sizes, `main.js` may need to be run for at least about 20 minutes, especially if you are looking for a very difficult puzzle.
+The program runs until interrupted by you.
+
 The shared solution to all these puzzles is stored in `solution.sbv`, and the different cagings are stored in the `cagings` folder, grouped by difficulty.
 For example, `cagings/5/1.sbv` is the first puzzle generated with difficulty 5, `cagings/5/2.sbv` is the second puzzle generated with difficulty 5, and so on.
 Running `main.js` will look something like this:
@@ -43,6 +45,13 @@ To view a generated puzzle, run `render.js`, which creates a `puzzle.html`:
 ./render.js cagings/10/1.sbv
 open puzzle.html
 ````
+
+The solution steps for a puzzle may be seen by running `solver.js` which gives
+you a step-by-step solution to the puzzle.
+
+You can also translate the internal (binary) form of the puzzle into a portable,
+[human-readable one](https://github.com/ghfbsd/kenken) by running the `trans.js`
+program.
 
 ## How puzzles are generated
 
@@ -147,4 +156,4 @@ The number of steps required to solve the grid is then the difficulty metric.
 This is probably not the most accurate metric of what makes a puzzle difficult to a human, but I just wanted a general sense of their relative difficulty so I could know which puzzles to choose among.
 Among other things, it doesn't consider the breadth of the inference graph or the relative difficulty of steps made by the different solvers.
 
-Caleb Sander, 2018
+Caleb Sander (CS), 2018
