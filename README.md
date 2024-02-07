@@ -131,7 +131,7 @@ The solving rules are as follows:
 	The same is true when using columns instead of rows.
 
 	This is easier to understand when `k` is 2.
-	Consider two columns in a 4x4 grid:
+	Consider this 4x4 grid, and focus on columns 1 and 2:
 	````
 	2 or 3     3 or 4     no 3 here     no 3 here
 	1 or 2     1 or 4     no 1 here     no 1 here
