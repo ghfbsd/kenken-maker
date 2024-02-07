@@ -133,13 +133,13 @@ The solving rules are as follows:
 	This is easier to understand when `k` is 2.
 	Consider this 4x4 grid, and focus on columns 1 and 2:
 	````
-	2 or 3     3 or 4     no 3 here     no 3 here
-	1 or 2     1 or 4     no 1 here     no 1 here
-	1 or 3     1 or 3     no 1 or 3     no 1 or 3
-	  4          2         anything      anything
+	2 or 3     3 or 4     any     any
+	1 or 2     1 or 4     any     any
+	1 or 3     1 or 3     any     any
+	  4          2        any     any
 	````
 
-	You can see that in each column, 1 must be in either the second or third boxes and 3 must be in either the first or third boxes.
+	You can see that in each column, 1 must be in either the second or third boxes and 3 must be in either the first or third boxes -- just based on the columns themselves.
 	Even though we don't know which box in each column contains the 1 or the 3, we know that no other box in the second or third rows can have 1, and no other box in the first or third rows can have 3.
 
 Ths is by no means a complete list of solving strategies, but the others I know are much more difficult to program.
