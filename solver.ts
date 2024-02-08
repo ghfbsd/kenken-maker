@@ -16,8 +16,8 @@ const readPuzzle = new Promise<Puzzle>((resolve, reject) => {
 		else resolve(value!)
 	})
 })
-Promise.all([readPuzzle])
-	.then(([puzzle]) => {
+
+readPuzzle.then((puzzle) => {
 		const {max, cages} = puzzle!
 		const solvingBoard = makeSolvingBoard(max, cages)
 		const steps = solvingBoard.solve(true)
