@@ -13,6 +13,26 @@ function usageError() {
 	throw new Error('Usage: ./main.js boardSize')
 }
 
+function badBoard(cages: Cage[]): boolean {
+	// Find all = ops
+	let LIMIT = 2
+	let singles = [...cages].map(c => c.boxes.length === 1)
+	if (singles.length === 0) return (false)
+
+	// Process them
+	let ruse: number[] = [...Array(size).keys()].map(() => 0)
+	let cuse: number[] = [...Array(size).keys()].map(() => 0)
+	for(const cage of cages) {
+		let [r, c] = cage.boxes[0]
+		ruse[r] += 1; cuse[c] += 1
+	}
+
+	// Too many in a row or col?
+	const nr = ruse.filter(n => n>LIMIT)
+	const nc = cuse.filter(n => n>LIMIT)
+	return (nr.length>0 || nc.length>0)
+}
+
 const {argv} = process
 if (argv.length !== 3) usageError()
 const size = Number(argv[2])
@@ -46,6 +66,7 @@ function makeCaging() {
 	let solved = false
 	while (!solved) {
 		cages = makeCages(board)
+		if (badBoard(cages)) continue
 		const solvingBoard = makeSolvingBoard(size, cages)
 		steps = solvingBoard.solve()
 		if (solvingBoard.noPossibilities()) { //should never happen
