@@ -267,17 +267,13 @@ const crossRowEliminate: Solver = (board, verbose) => {
 			}
 			for (let groupSize = 2; groupSize <= MAX_GROUP_SIZE && groupSize < rowCrossRows.length; groupSize++) {
 				for (const rowSet of choose(rowCrossRows, groupSize)) {
-					let IDrows = [...rowSet]
-					   .map(({row}) => rowID(row)).join(' ')
 					const rows = new Set<SolvingRow>()
 					const crossRowsUnion = new Set<SolvingRow>()
-					let IDcols = ''
 					for (const rowCrossRow of rowSet) { //union all cross rows of first groupSize rows
 						const {row, crossRows} = rowCrossRow
 						rows.add(row)
 						for (const crossRow of crossRows) {
 							crossRowsUnion.add(crossRow)
-							IDcols += ' ' + rowID(crossRow)
 						}
 					}
 					if (crossRowsUnion.size > groupSize) continue //value is not in all of the cross rows
@@ -285,13 +281,6 @@ const crossRowEliminate: Solver = (board, verbose) => {
 						for (const box of crossRow.boxes) {
 							if (rows.has(box.getOtherRow(crossRow))) continue //skip boxes in original rows
 							if (!box.hasPossibility(value)) continue
-							console.log(
-					                   'CRE (' +
-							   String(value) +
-							   '): ' +
-							   IDrows + ' vs' +
-							   IDcols
-							)
 							boxesToExclude.add(box)
 						}
 					}
