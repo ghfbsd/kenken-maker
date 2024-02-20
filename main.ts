@@ -16,13 +16,13 @@ function usageError() {
 function badBoard(cages: Cage[]): boolean {
 	// Find all = ops
 	let LIMIT = 2
-	let singles = [...cages].map(c => c.boxes.length === 1)
+	let singles = [...cages].filter(c => c.boxes.length === 1)
 	if (singles.length === 0) return (false)
 
 	// Process them
 	let ruse: number[] = [...Array(size).keys()].map(() => 0)
 	let cuse: number[] = [...Array(size).keys()].map(() => 0)
-	for(const cage of cages) {
+	for(const cage of singles) {
 		let [r, c] = cage.boxes[0]
 		ruse[r] += 1; cuse[c] += 1
 	}
