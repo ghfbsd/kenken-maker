@@ -5,7 +5,10 @@ import {makeSolvingBoard} from './solve'
 import {Puzzle, puzzleType} from './types'
 
 const {argv} = process
-if (argv.length <= 2) throw new Error('Usage: ./solver.js path/to/cagings.sbv')
+if (argv.length <= 2) {
+	Error.stackTraceLimit = 0
+	throw new Error('Usage: ' + argv[1].split('/').pop() + ' path/to/cagings.sbv')
+}
 
 const readPuzzle = new Promise<Puzzle>((resolve, reject) => {
 	sb.readValue({
