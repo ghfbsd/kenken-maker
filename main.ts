@@ -15,7 +15,7 @@ function usageError() {
 
 function badBoard(cages: Cage[]): boolean {
 	// Find all = ops
-	let LIMIT = 2
+	let LIMIT = 1
 	let singles = [...cages].filter(c => c.boxes.length === 1)
 	if (singles.length === 0) return (false)
 
