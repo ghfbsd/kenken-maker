@@ -20,8 +20,8 @@ function badBoard(cages: Cage[]): boolean {
 	if (singles.length === 0) return (false)
 
 	// Process them
-	let ruse: number[] = [...Array(size).keys()].map(() => 0)
-	let cuse: number[] = [...Array(size).keys()].map(() => 0)
+	let ruse = Array<number>(size).fill(0)
+	let cuse = Array<number>(size).fill(0)
 	for(const cage of singles) {
 		let [r, c] = cage.boxes[0]
 		ruse[r] += 1; cuse[c] += 1
