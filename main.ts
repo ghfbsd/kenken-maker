@@ -57,7 +57,7 @@ for(let n = 2; n<argv.length; n++) {
 	process.stderr.write('***Bad arg: "' + arg + '"\n')
 	usageError()
 }
-if (isNaN(size)) usageError()
+if (isNaN(size) || size <= 0 || size > 9) usageError()
 
 const board = makeBoard(size)
 sb.writeValue({
