@@ -83,7 +83,10 @@ sb.writeValue({
 })
 const stepsCount: number[] = [] //map of difficulties to count of cagings; key 0 for unsolvable
 function makeCaging() {
-	if (stepsCount.slice(level).filter(s => s >= lim).length > 0) return
+	if (stepsCount.slice(level).filter(s => s >= lim).length > 0) {
+		process.stdout.write('\n')
+		return
+	}
 	let cages: Cage[], steps: number
 	let solved = false
 	while (!solved) {
@@ -116,13 +119,25 @@ function makeCaging() {
 function logPuzzleCounts() {
 	const failed = stepsCount[0] || 0
 	const succeeded = stepsCount.reduce((a, b) => a + b, 0) - failed
-	console.log(
-		'Successes:',
-		(succeeded / (failed + succeeded) * 100).toFixed(2) + '%;',
-		'Counts:',
+	let str = 
+	//	'Successes: ' +
+		(succeeded / (failed + succeeded) * 100).toFixed(2) + '%; ' +
+	//	'Counts: ' +
 		stepsCount
 			.map((count, steps) => String(steps) + ': ' + String(count))
 			.filter(x => x) //take out all steps with no count
 			.join(', ')
-	)
+	if (str.length > 79) {
+		// Don't let progress string get too long; chop off low-rank
+		//   solution counts if so.  Always include the % and 0-count
+		//   fields, however.
+		let sum = 0, len = str.split(', ')
+			.map(c => 2 + c.length)
+			.map(n => sum += n)
+		len[len.length-1] = len.pop()! - 2
+		const drop = [...len].map(s => str.length-s + len[1])
+		str = ' '.repeat(80) + '\r' + str.split(', ')
+			.filter((_,key) => drop[key] < 79 || key<1).join(', ')
+	}
+	process.stdout.write(str + '\r')
 }
