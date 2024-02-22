@@ -3,10 +3,24 @@ import * as fs from 'fs'
 import * as sb from 'structure-bytes'
 import {Puzzle, puzzleType} from './types'
 
+// Parse args
 const {argv} = process
-if (argv.length <= 2) {
+
+function Usage(): void {
 	Error.stackTraceLimit = 0
-	throw new Error('Usage: ' + argv[1].split('/').pop() + ' path/to/cagings.sbv')
+	throw new Error('Usage: ' + argv[1].split('/').pop() + ' path/to/cagings.sbv [-id string]')
+}
+
+if (argv.length <= 2) Usage()		// need the file
+
+let id = argv[2]
+for(let n=3; n<argv.length; n++) {	// check for explicit ID
+	const arg = argv[n]
+	if (arg === '-id') {
+		id = argv[++n]
+		continue
+	}
+	Usage()
 }
 
 const readPuzzle = new Promise<Puzzle>((resolve, reject) => {
@@ -36,7 +50,7 @@ readPuzzle.then((puzzle) => {
 				grid[r].substr(c+1)
 		}
 	}
-	process.stdout.write('.KK "' + argv[2] + '"\n')
+	process.stdout.write('.KK "' + id + '"\n')
 	grid.map((s) => process.stdout.write(s + '\n'))
 	process.stdout.write('\n')
 	n = 0
