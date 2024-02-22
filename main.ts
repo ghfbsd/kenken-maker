@@ -11,7 +11,9 @@ const CAGINGS_DIR = 'cagings'
 
 function usageError() {
 	Error.stackTraceLimit = 0
-	throw new Error('Usage: ' + argv[1].split('/').pop() + ' boardSize')
+	throw new Error('Usage: ' + argv[1].split('/').pop() + ' boardSize' +
+		' [-count level/number]'
+	)
 }
 
 function badBoard(cages: Cage[]): boolean {
@@ -34,9 +36,27 @@ function badBoard(cages: Cage[]): boolean {
 	return (nr.length>0 || nc.length>0)
 }
 
+// Parse args
 const {argv} = process
-if (argv.length !== 3) usageError()
-const size = Number(argv[2])
+let size: number = NaN, lim = Infinity, level = 0
+for(let n = 2; n<argv.length; n++) {
+	const arg = argv[n]
+	const c = arg.substr(0,1)
+	if (c !== '-' && isNaN(size)) {
+		size = Number(arg)	// set puzzle size
+		continue
+	}
+	if (arg === '-count') {		// set limit on # puzzles
+		const levlim = argv[++n].split('/')
+		if (levlim.length !== 2) usageError()
+		level = Number(levlim[0])
+		lim = Number(levlim[1])
+		if (isNaN(level) || isNaN(lim)) usageError()
+		continue
+	}
+	process.stderr.write('***Bad arg: "' + arg + '"\n')
+	usageError()
+}
 if (isNaN(size)) usageError()
 
 const board = makeBoard(size)
@@ -63,6 +83,7 @@ sb.writeValue({
 })
 const stepsCount: number[] = [] //map of difficulties to count of cagings; key 0 for unsolvable
 function makeCaging() {
+	if (stepsCount.slice(level).filter(s => s >= lim).length > 0) return
 	let cages: Cage[], steps: number
 	let solved = false
 	while (!solved) {
