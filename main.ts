@@ -10,7 +10,8 @@ const SOLUTION_FILE = 'solution.sbv'
 const CAGINGS_DIR = 'cagings'
 
 function usageError() {
-	throw new Error('Usage: ./main.js boardSize')
+	Error.stackTraceLimit = 0
+	throw new Error('Usage: ' + argv[1].split('/').pop() + ' boardSize')
 }
 
 function badBoard(cages: Cage[]): boolean {
