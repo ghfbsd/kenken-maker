@@ -59,6 +59,14 @@ You can also translate the internal (binary) form of the puzzle into a portable,
 `trans.js` program.  You can solve puzzles in the human-readable format
 directly using `mysolver.js` (though not all puzzles are solvable; see above).
 
+The shell script `generate.sh` will generate a suite of puzzles of some given
+size and level of difficulty.  Use it like so:
+````
+sh generate.sh 6 -count 12/10 -out /tmp/puzzle.out
+````
+which will write a set of 10 puzzles of difficulty level 12 into the file
+`/tmp/puzzle.out`.  The puzzles will be of size 6x6.
+
 ## How puzzles are generated
 
 There are essentially 3 steps to generating an `n` by `n` puzzle:
