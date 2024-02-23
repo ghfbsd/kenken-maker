@@ -8,11 +8,12 @@ import {Cage, puzzleType, solutionType} from './types'
 
 const SOLUTION_FILE = 'solution.sbv'
 const CAGINGS_DIR = 'cagings'
+let   LINE = 80
 
 function usageError() {
 	Error.stackTraceLimit = 0
 	throw new Error('Usage: ' + argv[1].split('/').pop() + ' boardSize' +
-		' [-count level/number]'
+		' [-count level/number] [-odo [n]]'
 	)
 }
 
@@ -54,6 +55,16 @@ for(let n = 2; n<argv.length; n++) {
 		if (isNaN(level) || isNaN(lim)) usageError()
 		continue
 	}
+	if (arg === '-odo') {		// progress odometer
+		if (n+1 >= argv.length) {
+			LINE = 0
+			continue
+		}
+		let line = Number(argv[n+1])
+		if (isNaN(line)) line = 0; else n++
+		LINE = line
+		continue
+	}
 	process.stderr.write('***Bad arg: "' + arg + '"\n')
 	usageError()
 }
@@ -84,7 +95,7 @@ sb.writeValue({
 const stepsCount: number[] = [] //map of difficulties to count of cagings; key 0 for unsolvable
 function makeCaging() {
 	if (stepsCount.slice(level).filter(s => s >= lim).length > 0) {
-		process.stdout.write('\n')
+		if (LINE) process.stdout.write('\n')
 		return
 	}
 	let cages: Cage[], steps: number
@@ -117,6 +128,7 @@ function makeCaging() {
 		.then(makeCaging)
 }
 function logPuzzleCounts() {
+	if (!LINE) return
 	const failed = stepsCount[0] || 0
 	const succeeded = stepsCount.reduce((a, b) => a + b, 0) - failed
 	let str = 
@@ -127,17 +139,18 @@ function logPuzzleCounts() {
 			.map((count, steps) => String(steps) + ': ' + String(count))
 			.filter(x => x) //take out all steps with no count
 			.join(', ')
-	if (str.length > 79) {
+	if (str.length > LINE) {
 		// Don't let progress string get too long; chop off low-rank
 		//   solution counts if so.  Always include the % and 0-count
 		//   fields, however.
 		let sum = 0, len = str.split(', ')
 			.map(c => 2 + c.length)
 			.map(n => sum += n)
-		len[len.length-1] = len.pop()! - 2
+		len.push(len.pop()! - 2)
 		const drop = [...len].map(s => str.length-s + len[1])
-		str = ' '.repeat(80) + '\r' + str.split(', ')
-			.filter((_,key) => drop[key] < 79 || key<1).join(', ')
+		str = ' '.repeat(LINE) + '\r' + str.split(', ')
+			.filter((_,key) => drop[key] < LINE || key<1)
+			.join(', ')
 	}
 	process.stdout.write(str + '\r')
 }
