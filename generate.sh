@@ -11,8 +11,13 @@
 prog=$0
 
 usage() {
-   echo "Usage: ${prog} k [-count m/n] -out <file>" > /dev/tty
+   echo "Usage: ${prog} k -count m/n [-out <file>]" > /dev/tty
    exit 1
+}
+
+err() {
+   echo "***$*" > /dev/tty
+   usage
 }
 
 ## Parse args
@@ -30,18 +35,20 @@ while [ $# -gt 0 ] ; do
    esac
    shift
 done
+[ -n "$k" ] || err "Missing k (puzzle size)"
+[ -n "$count" ] || err "Missing -count"
 
 ## Run generation program
 echo "${count}" |
    awk 'BEGIN{err=""}
    {
       n=split($0,f,"/")
-      if (n != 2) err="error"
-      for(i=1; i<=n; i++) if (f[i] != "" 0+f[i] "") err="error"
+      if (n != 2) {f[1]=0; f[2]=0; err="Malformed -count"}
+      for(i=1; i<=n; i++) if (f[i] != "" 0+f[i] "") err="Invalid -count"
       print f[1],f[2],err
    }' |
-while read lev num err ; do
-   [ '' != "${err}" ] && usage
+while read lev num error ; do
+   [ -n "${error}" ] && err ${error}
    n=0
    while [ $n -lt $num ] ; do
       ./main.js $k -count ${lev}/1 || break
