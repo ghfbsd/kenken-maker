@@ -2,7 +2,7 @@ import {Box, Cage, Op} from './types'
 import {rand, transpose} from './utils'
 
 const SHUFFLE_TIMES = 1e5 //number of times to shuffle rows and columns when making random board
-const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.7 //decreased probability of size-1 and size-5 cages
+const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55 //decreased probability of size-1 and size-5 cages
 const DIV_PROB = 0.5, //probability of picking '/' for cage op if possible
     MINUS_PROB = 0.5  //probability of picking '-' for cage op if possible and '/' not chosen
 
