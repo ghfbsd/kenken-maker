@@ -8,7 +8,7 @@ import {Cage, puzzleType, solutionType} from './types'
 
 const SOLUTION_FILE = 'solution.sbv'
 const CAGINGS_DIR = 'cagings'
-let   LINE = 80
+let   LINE = 80, LAST = 0
 
 function usageError() {
 	Error.stackTraceLimit = 0
@@ -139,7 +139,7 @@ function logPuzzleCounts() {
 			.map((count, steps) => String(steps) + ': ' + String(count))
 			.filter(x => x) //take out all steps with no count
 			.join(', ')
-	if (str.length > LINE) {
+	if (str.length >= LINE) {
 		// Don't let progress string get too long; chop off low-rank
 		//   solution counts if so.  Always include the % and 0-count
 		//   fields, however.
@@ -148,9 +148,12 @@ function logPuzzleCounts() {
 			.map(n => sum += n)
 		len.push(len.pop()! - 2)
 		const drop = [...len].map(s => str.length-s + len[1])
-		str = ' '.repeat(LINE) + '\r' + str.split(', ')
+		str = str.split(', ')
 			.filter((_,key) => drop[key] < LINE || key<1)
 			.join(', ')
 	}
+	const len = str.length
+	if (len < LAST) str = ' '.repeat(LAST) + '\r' + str
 	process.stdout.write(str + '\r')
+	LAST = len
 }
