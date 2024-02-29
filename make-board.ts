@@ -2,7 +2,6 @@ import {Box, Cage, Op} from './types'
 import {rand, transpose} from './utils'
 
 const SHUFFLE_TIMES = 1e5 //number of times to shuffle rows and columns when making random board
-const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55 //decreased probability of size-1 and size-5 cages
 const DIV_PROB = 0.5, //probability of picking '/' for cage op if possible
     MINUS_PROB = 0.5  //probability of picking '-' for cage op if possible and '/' not chosen
 
@@ -32,8 +31,6 @@ export function makeBoard(max: number, shuffleTimes = SHUFFLE_TIMES): Board {
 	return board
 }
 
-const makeCageSize = () =>
-	Math.round(MIN_CAGE_SIZE + Math.random() * (MAX_CAGE_SIZE - MIN_CAGE_SIZE))
 type BoxId = string
 const boxId = (box: Box): BoxId => box.join(' ')
 const fromBoxId = (id: BoxId): Box => id.split(' ').map(Number) as Box
@@ -102,6 +99,24 @@ export function makeCages(board: Board): Cage[] {
 	for (let row = 0; row < max; row++) {
 		for (let col = 0; col < max; col++) fullGrid.push([row, col])
 	}
+	const makeCageSize = function(n: number) {
+		//Uniform probability among cage sizes 2-4, with decreased
+		//  probability of 1 and 5.
+		//const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55
+		//if (n) return () =>
+		//	Math.round(MIN_CAGE_SIZE +
+		//		Math.random() * (MAX_CAGE_SIZE - MIN_CAGE_SIZE)
+		//	)
+		//Exponentially decreasing probability for sizes 2-5 for >4x4;
+		//   see freq.R for derivation of PDF and breakpoints
+		if (n < 4) return () => 2
+		let 		N = [0.481, 0.753, 0.942]
+		if (n > 4)	N = [0.318, 0.764, 0.947, 0.992]
+		return () => {
+			const U = Math.random()
+			return 1 + N.filter(D => U > D).length
+		}
+	}(max)
 	const unallocatedRegions: Box[][] = [fullGrid] //sorted by size
 	const cages: Cage[] = []
 	//Generate cages while there are unallocated regions of size > maxCage
