@@ -94,7 +94,8 @@ sb.writeValue({
 })
 const stepsCount: number[] = [] //map of difficulties to count of cagings; key 0 for unsolvable
 function makeCaging() {
-	if (stepsCount.slice(level).filter(s => s >= lim).length > 0) {
+	let s = 0
+	if (stepsCount.slice(level).map(n => s+=n, s).pop()! >= lim) {
 		if (LINE) process.stdout.write('\n')
 		return
 	}
@@ -146,17 +147,12 @@ function logPuzzleCounts() {
 		let sum = 0, len = str.split(', ')
 			.map(c => 2 + c.length)
 			.map(n => sum += n)
-		len[0] = 0; len.push(len.pop()! - 2)
+		len.push(len.pop()! - 2)
 		const drop = [...len]
-			.map(s => str.length - s + len[1])
+			.map(s => str.length - s + len[1] + 1)
 		str = str.split(', ')
 			.filter((_,i) => drop[i] < LINE || i<1)
 			.join(', ')
-		if (str.length > 80) {
-			console.log(str)
-			console.log(drop)
-			throw new Error('**Bad logic')
-		}
 	}
 	const len = str.length
 	if (len < LAST) str = ' '.repeat(LAST) + '\r' + str
