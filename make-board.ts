@@ -88,7 +88,7 @@ function addCage(board: Board, cages: Cage[], boxes: Box[]) {
 	cages.push({op, val, boxes})
 }
 
-export function makeCages(board: Board): Cage[] {
+export function makeCages(board: Board, makeCageSize: () => number): Cage[] {
 	const max = board.length
 	const cagedBoxes = new Set<BoxId>() //boxes in any cage
 	const neighborsOf = ([r, c]: Box) =>
@@ -99,24 +99,6 @@ export function makeCages(board: Board): Cage[] {
 	for (let row = 0; row < max; row++) {
 		for (let col = 0; col < max; col++) fullGrid.push([row, col])
 	}
-	const makeCageSize = function(n: number) {
-		//Uniform probability among cage sizes 2-4, with decreased
-		//  probability of 1 and 5.
-		//const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55
-		//if (n) return () =>
-		//	Math.round(MIN_CAGE_SIZE +
-		//		Math.random() * (MAX_CAGE_SIZE - MIN_CAGE_SIZE)
-		//	)
-		//Exponentially decreasing probability for sizes 2-5 for >4x4;
-		//   see freq.R for derivation of PDF and breakpoints
-		if (n < 4) return () => 2
-		let 		N = [0.481, 0.753, 0.942]
-		if (n > 4)	N = [0.318, 0.764, 0.947, 0.992]
-		return () => {
-			const U = Math.random()
-			return 1 + N.filter(D => U > D).length
-		}
-	}(max)
 	const unallocatedRegions: Box[][] = [fullGrid] //sorted by size
 	const cages: Cage[] = []
 	//Generate cages while there are unallocated regions of size > maxCage

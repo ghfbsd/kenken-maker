@@ -71,6 +71,24 @@ for(let n = 2; n<argv.length; n++) {
 if (isNaN(size) || size <= 0 || size > 9) usageError()
 
 const board = makeBoard(size)
+const makeCageSize = function(n: number) {
+	//Uniform probability among cage sizes 2-4, with decreased
+	//  probability of 1 and 5.
+	//const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55
+	//if (n) return () =>
+	//	Math.round(MIN_CAGE_SIZE +
+	//		Math.random() * (MAX_CAGE_SIZE - MIN_CAGE_SIZE)
+	//	)
+	//Exponentially decreasing probability for sizes 2-5 for >4x4;
+	//   see freq.R for derivation of PDF and breakpoints
+	if (n < 4) return () => 2
+	let 		N = [0.481, 0.753, 0.942]
+	if (n > 4)	N = [0.318, 0.764, 0.947, 0.992]
+	return () => {
+		const U = Math.random()
+		return 1 + N.filter(D => U > D).length
+	}
+}(size)
 sb.writeValue({
 	type: solutionType,
 	value: ([] as number[]).concat(...board),
@@ -102,7 +120,7 @@ function makeCaging() {
 	let cages: Cage[], steps: number
 	let solved = false
 	while (!solved) {
-		cages = makeCages(board)
+		cages = makeCages(board, makeCageSize)
 		if (badBoard(cages)) continue
 		const solvingBoard = makeSolvingBoard(size, cages)
 		steps = solvingBoard.solve()
