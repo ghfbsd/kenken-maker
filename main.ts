@@ -71,11 +71,12 @@ for(let n = 2; n<argv.length; n++) {
 if (isNaN(size) || size <= 0 || size > 9) usageError()
 
 const board = makeBoard(size)
+// @ts-ignore n may be unused
 const makeCageSize = function(n: number) {
 	//Uniform probability among cage sizes 2-4, with decreased
 	//  probability of 1 and 5.
 	//const MIN_CAGE_SIZE = 1.05, MAX_CAGE_SIZE = 4.55
-	//if (n) return () =>
+	//return () =>
 	//	Math.round(MIN_CAGE_SIZE +
 	//		Math.random() * (MAX_CAGE_SIZE - MIN_CAGE_SIZE)
 	//	)
