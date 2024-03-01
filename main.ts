@@ -83,8 +83,7 @@ const makeCageSize = function(n: number) {
 	//Exponentially decreasing probability for sizes 2-5 for >4x4;
 	//   see freq.R for derivation of PDF and breakpoints
 	if (n < 4) return () => 2
-	let 		N = [0.481, 0.753, 0.942]
-	if (n > 4)	N = [0.318, 0.764, 0.947, 0.992]
+	const N = n === 4 ? [0.481, 0.753, 0.942] : [0.318, 0.764, 0.947, 0.992]
 	return () => {
 		const U = Math.random()
 		return 1 + N.filter(D => U > D).length
