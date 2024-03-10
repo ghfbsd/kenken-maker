@@ -57,17 +57,18 @@ function addCage(board: Board, cages: Cage[], boxes: Box[]) {
 		const max = Math.max(...numbers)
 		const sum = numbers.reduce((a, b) => a + b),
 		  product = numbers.reduce((a, b) => a * b),
-		    mulOK = max !== product 	// n*1 is a silly choice
+		    mulOK = max !== product,	// n*1 is a silly choice
+		     pair = boxes.length === 2
 		const maxMinus = (max << 1) - sum,
 		        maxDiv = max ** 2 / product
 		op =
 			// try to use div if possible, since this is rarer
 			// also only allow it for 2 box group
-			(maxDiv === (maxDiv | 0) && Math.random() < DIV_PROB &&
-			 boxes.length === 2 && mulOK) ? '/' :
+			(pair && mulOK && maxDiv === (maxDiv | 0) &&
+			 Math.random() < DIV_PROB) ? '/' :
 			// minus also only allowed for 2 box group
-			(maxMinus > 0 && Math.random() < MINUS_PROB &&
-			 boxes.length === 2) ? '-' :
+			(pair && maxMinus > 0 &&
+			 Math.random() < MINUS_PROB) ? '-' :
 			mulOK ? chooseRand(alwaysPossibleOps) : '+'
 		switch (op) {
 			case '+':
