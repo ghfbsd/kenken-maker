@@ -151,7 +151,7 @@ The solving rules are as follows:
 	You can see that in each column, 1 must be in either the second or third boxes and 3 must be in either the first or third boxes -- just based on the columns themselves.
 	Even though we don't know which box in each column contains the 1 or the 3, we know that no other box in the second or third rows can have 1, and no other box in the first or third rows can have 3.
 
-This is by no means a complete list of solving strategies, but the others I know are much more difficult to program.
+This is by no means a complete list of solving strategies, but any others are much more difficult to program.
 For example, it is often possible to find the sum of all the boxes in a row or column except for one, and since the sum of each row and column is `1 + ... + n`, the value of the remaining box's value can be determined.
 
 ## The difficulty metric
